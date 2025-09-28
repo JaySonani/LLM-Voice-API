@@ -15,7 +15,7 @@ class StubLLM(LLMPort):
     def _deterministic_score(self, seed: str) -> float:
         """Generate a float between 0-1 based on hash of seed."""
         h = hashlib.sha256(seed.encode()).hexdigest()
-        return int(h[:8], 16) / 0xFFFFFFFF
+        return round(int(h[:8], 16) / 0xFFFFFFFF, 2)
 
     def generate_voice_profile(
         self, *, brand: Brand, site_text: str | None, samples: list[str] | None

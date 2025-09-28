@@ -50,7 +50,7 @@ class ProviderLLM(LLMPort):
 
             """
 
-        print("\n\n---> Waiting for LLM response...")
+        print("\n\n---> Generating voice profile with Cohere LLM...")
 
         llm_response: ChatResponse = self.cohere_client.chat(
             model=self.model,
@@ -174,7 +174,7 @@ class ProviderLLM(LLMPort):
         }}
         """
 
-        print("\n\n---> Evaluating text with LLM...")
+        print("\n\n---> Evaluating text with CohereLLM...")
 
         llm_response: ChatResponse = self.cohere_client.chat(
             model=self.model,

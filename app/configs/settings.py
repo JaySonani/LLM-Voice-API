@@ -26,6 +26,9 @@ class Settings(BaseSettings):
     # API Keys
     COHERE_API_KEY: str = os.getenv("COHERE_API_KEY", "")
     
+    # LLM Configuration
+    USE_STUB_LLM: bool = os.getenv("USE_STUB_LLM", "false").lower() in ("true", "1", "yes")
+    
     class Config:
         """Configuration settings."""
         env_file = ".env"

@@ -1,5 +1,5 @@
 # routers/voices.py
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
 from uuid import UUID, uuid4
 
 from sqlmodel import Session
@@ -25,7 +25,7 @@ def get_voice_service(db: Session = Depends(get_db)) -> VoiceService:
     return VoiceService(db)
 
 
-@router.post(":generate")
+@router.post(":generate", response_model=VoiceProfileResponse, status_code=201)
 def generate_voice(
     brand_id: UUID,
     voice_profile_request: CreateVoiceProfileRequest,
@@ -37,52 +37,64 @@ def generate_voice(
     )
 
     if not voice_profile_response.success:
-        raise HTTPException(status_code=404, detail=voice_profile_response.message)
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, 
+            detail=voice_profile_response.message
+        )
 
     return voice_profile_response
 
 
-@router.get("/latest")
+@router.get("/latest", response_model=VoiceProfileResponse)
 def get_latest_voice(
     brand_id: UUID,
     voice_service: VoiceService = Depends(get_voice_service),
-):
+) -> VoiceProfileResponse:
     """Get the latest voice profile for a brand."""
     voice_profile = voice_service.get_latest_voice_profile(str(brand_id))
 
     if voice_profile is None:
         raise HTTPException(
-            status_code=404, detail=f"No voice profile found for brand {brand_id}"
+            status_code=status.HTTP_404_NOT_FOUND, 
+            detail=f"No voice profile found for brand {brand_id}"
         )
 
-    return voice_profile
+    return VoiceProfileResponse(
+        success=True,
+        voice_profile=voice_profile,
+        message="Latest voice profile retrieved successfully"
+    )
 
 
-@router.get("/{version}")
+@router.get("/{version}", response_model=VoiceProfileResponse)
 def get_voice_version(
     brand_id: UUID,
     version: int,
     voice_service: VoiceService = Depends(get_voice_service),
-):
+) -> VoiceProfileResponse:
     """Get a specific version of voice profile for a brand."""
     voice_profile = voice_service.get_voice_profile_by_version(str(brand_id), version)
 
     if voice_profile is None:
         raise HTTPException(
-            status_code=404,
+            status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Voice profile version {version} not found for this brand",
         )
 
-    return voice_profile
+    return VoiceProfileResponse(
+        success=True,
+        voice_profile=voice_profile,
+        message=f"Voice profile version {version} retrieved successfully"
+    )
 
 
-@router.post("/{version}/evaluate")
+@router.post("/{version}/evaluate", response_model=VoiceEvaluationResponse, status_code=201)
 def evaluate_voice(
     brand_id: UUID,
     version: int,
     voice_evaluation_request: VoiceEvaluationRequest,
     voice_service: VoiceService = Depends(get_voice_service),
-):
+) -> VoiceEvaluationResponse:
     """Evaluate text against a specific voice profile version."""
 
     voice_profile = voice_service.get_voice_profile_by_version(str(brand_id), version)
@@ -91,7 +103,7 @@ def evaluate_voice(
 
     if voice_profile is None:
         raise HTTPException(
-            status_code=404,
+            status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Voice profile version {version} not found for this brand",
         )
 

@@ -10,7 +10,7 @@ from app.models.db.brand import BrandDB
 from app.models.db.voice_profile import VoiceEvaluationDB, VoiceProfileDB
 from app.models.voice import CreateVoiceProfileRequest, VoiceEvaluation, VoiceProfile, VoiceProfileResponse
 from app.tool import fetch_page_text
-
+from app.configs.settings import settings
 
 class VoiceService:
     """Service class for voice-related operations."""
@@ -18,6 +18,13 @@ class VoiceService:
     def __init__(self, db: Session):
         """Initialize VoiceService with database session."""
         self.db = db
+
+    def _get_llm_instance(self, llm_model: str) -> LLMPort:
+        """Get the appropriate LLM instance based on environment configuration."""
+        if settings.USE_STUB_LLM:
+            return StubLLM()
+        else:
+            return ProviderLLM(llm_model)
 
     def generate_voice_profile(self, brand_id: str, voice_profile_request: CreateVoiceProfileRequest) -> VoiceProfileResponse:
         """Generate a voice profile for a brand with versioning."""
@@ -46,7 +53,7 @@ class VoiceService:
             site_text.append(fetch_page_text(url))
 
 
-        llm: LLMPort = ProviderLLM(voice_profile_request.llm_model)
+        llm: LLMPort = self._get_llm_instance(voice_profile_request.llm_model)
 
         # Generate voice profile with LLM
         voice_profile = llm.generate_voice_profile(
@@ -113,7 +120,7 @@ class VoiceService:
     
     def evaluate_text(self, voice_profile: VoiceProfile, text: str) -> VoiceEvaluation:
         """Evaluate text against a voice profile."""
-        llm: LLMPort = ProviderLLM(voice_profile.llm_model)
+        llm: LLMPort = self._get_llm_instance(voice_profile.llm_model)
         return llm.evaluate_text(voice=voice_profile, text=text)
 
 
