@@ -21,24 +21,20 @@ def create_app() -> FastAPI:
 
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=["*"],  # Configure appropriately for production
+        allow_origins=["*"],
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
     )
 
-    # Include routers
     app.include_router(brands_router, prefix=settings.api_prefix)
-    # app.include_router(evaluation_router, prefix=settings.api_prefix)
 
-    # Root endpoint
     @app.get("/")
     async def root():
         return {
             "message": "Welcome to Voice API - Brand Voice Management Service",
             "version": settings.app_version,
             "docs": "/docs",
-            "health": "/health"
         }
 
     return app

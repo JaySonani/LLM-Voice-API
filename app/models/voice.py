@@ -1,11 +1,11 @@
 """Voice-related Pydantic models."""
 
-from datetime import datetime, timezone
+from datetime import datetime
 from enum import Enum
 from typing import Dict, List, Optional
 from uuid import UUID
 
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, Field, model_validator, ConfigDict
 
 
 class VoiceSource(str, Enum):
@@ -46,23 +46,6 @@ class VoiceProfileMetrics(BaseModel):
     playfulness: float = Field(description="Playfulness score")
 
 
-class VoiceProfileResponseLLM(BaseModel):
-    """Response model for a voice profile from LLM."""
-    metrics: VoiceProfileMetrics = Field(
-        description="Voice metrics scores",
-    )
-    target_demographic: str = Field(description="Target audience demographic")
-    style_guide: List[str] = Field(description="List of style guidelines")
-    writing_example: str = Field(description="Example of writing style")
-
-
-class VoiceEvaluationResponseLLM(BaseModel):
-    """Response model for a voice evaluation from LLM."""
-    scores: VoiceProfileMetrics = Field(
-        description="Voice metrics scores",
-    )
-    suggestions: List[str] = Field(description="List of improvement suggestions")
-
 class VoiceEvaluation(BaseModel):
     """Voice evaluation results for a given input text."""
 
@@ -82,16 +65,7 @@ class VoiceEvaluation(BaseModel):
     updated_at: Optional[datetime] = None
 
 
-class VoiceProfileResponse(BaseModel):
-    """Response model for a voice profile."""
-
-    success: bool = Field(description="Whether the operation was successful")
-    voice_profile: Optional[VoiceProfile] = Field(
-        description="Voice profile data, None if operation failed"
-    )
-    message: str = Field(description="Response message")
-
-
+# HTTP API Models
 class VoiceProfileInputs(BaseModel):
     """Input data for generating a voice profile."""
 
@@ -120,11 +94,25 @@ class CreateVoiceProfileRequest(BaseModel):
     )
     llm_model: str = Field(description="LLM model to use for generation")
 
+    model_config = ConfigDict(extra="forbid")
+
+
+class VoiceProfileResponse(BaseModel):
+    """Response model for a voice profile."""
+
+    success: bool = Field(description="Whether the operation was successful")
+    voice_profile: Optional[VoiceProfile] = Field(
+        description="Voice profile data, None if operation failed"
+    )
+    message: str = Field(description="Response message")
+
 
 class VoiceEvaluationRequest(BaseModel):
     """Request model for evaluating a text."""
 
     text: str = Field(description="Text to evaluate")
+
+    model_config = ConfigDict(extra="forbid")
 
 
 class VoiceEvaluationResponse(BaseModel):
@@ -133,3 +121,24 @@ class VoiceEvaluationResponse(BaseModel):
     success: bool = Field(description="Whether the operation was successful")
     voice_evaluation: VoiceEvaluation
     message: str = Field(description="Response message")
+
+
+# LLM Models
+class VoiceProfileResponseLLM(BaseModel):
+    """Response model for a voice profile from LLM."""
+
+    metrics: VoiceProfileMetrics = Field(
+        description="Voice metrics scores",
+    )
+    target_demographic: str = Field(description="Target audience demographic")
+    style_guide: List[str] = Field(description="List of style guidelines")
+    writing_example: str = Field(description="Example of writing style")
+
+
+class VoiceEvaluationResponseLLM(BaseModel):
+    """Response model for a voice evaluation from LLM."""
+
+    scores: VoiceProfileMetrics = Field(
+        description="Voice metrics scores",
+    )
+    suggestions: List[str] = Field(description="List of improvement suggestions")

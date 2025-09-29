@@ -1,10 +1,8 @@
 """Database connection."""
 
-import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 
-# Get DATABASE_URL from environment with fallback for development
 from app.configs.settings import settings
 
 

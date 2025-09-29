@@ -24,6 +24,7 @@ def fetch_page_text(url: str) -> str:
             tag.extract()
 
         text = soup.get_text(separator=" ", strip=True)
+        print("---> Fetched text from URLs.")
         return text
 
     except requests.RequestException as e:
