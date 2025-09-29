@@ -1,7 +1,5 @@
-
-
-from datetime import datetime
 import hashlib
+from datetime import datetime
 from uuid import uuid4
 
 from app.llm.ports import LLMPort
@@ -44,32 +42,28 @@ class StubLLM(LLMPort):
             version=1,
             metrics=metrics,
             target_demographic=f"Deterministic demographic for {brand.name}",
-            style_guide=[
-                f"Always mention {brand.name}", "Keep sentences short"],
+            style_guide=[f"Always mention {brand.name}", "Keep sentences short"],
             writing_example=f"This is a sample writing style for {brand.name}.",
             llm_model="stub-llm",
             source=voice_source,
             created_at=datetime.now(),
-            updated_at=datetime.now()
+            updated_at=datetime.now(),
         )
 
-    def evaluate_text(
-        self, *, voice: VoiceProfile, text: str
-    ) -> VoiceEvaluation:
+    def evaluate_text(self, *, voice_profile: VoiceProfile, text: str) -> VoiceEvaluation:
         # Compare against expected metrics (simplified)
 
         scores = {}
-        for metric_name in voice.metrics.keys():
+        for metric_name in voice_profile.metrics.keys():
             score = self._deterministic_score(text + metric_name)
             scores[metric_name] = score
 
-        suggestions = [
-            f"Consider adjusting {k} tone." for k in voice.metrics.keys()]
+        suggestions = [f"Consider adjusting {k} tone." for k in voice_profile.metrics.keys()]
         return VoiceEvaluation(
             id=str(uuid4()),
-            brand_id=voice.brand_id,
-            voice_profile_id=voice.id,
+            brand_id=voice_profile.brand_id,
+            voice_profile_id=voice_profile.id,
             input_text=text,
             scores=scores,
-            suggestions=suggestions
+            suggestions=suggestions,
         )

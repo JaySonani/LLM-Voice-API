@@ -1,26 +1,19 @@
 import json
-from uuid import uuid4
-from cohere import ChatResponse, ClientV2
 from datetime import datetime
+from uuid import uuid4
+
+from cohere import ChatResponse, ClientV2
+
 from app.configs.settings import settings
-from app.helpers.prompt_helper import (
-    get_voice_evaluation_prompt,
-    get_voice_profile_prompt,
-)
+from app.helpers.prompt_helper import (get_voice_evaluation_prompt,
+                                       get_voice_profile_prompt)
 from app.helpers.response_schema_helper import (
-    voice_evaluation_response_schema,
-    voice_profile_response_schema,
-)
+    voice_evaluation_response_schema, voice_profile_response_schema)
 from app.llm.ports import LLMPort
 from app.models.brand import Brand
-from app.models.voice import (
-    VoiceEvaluation,
-    VoiceEvaluationResponseLLM,
-    VoiceProfile,
-    VoiceProfileMetrics,
-    VoiceProfileResponseLLM,
-    VoiceSource,
-)
+from app.models.voice import (VoiceEvaluation, VoiceEvaluationResponseLLM,
+                              VoiceProfile, VoiceProfileMetrics,
+                              VoiceProfileResponseLLM, VoiceSource)
 
 
 class ProviderLLM(LLMPort):

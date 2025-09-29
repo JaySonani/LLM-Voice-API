@@ -4,13 +4,11 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.configs.database import get_db
-from app.models.brand import (
-    CreateBrandRequest,
-    CreateBrandResponse,
-    GetAllBrandsResponse,
-)
+from app.models.brand import (CreateBrandRequest, CreateBrandResponse,
+                              GetAllBrandsResponse)
 from app.services.brand_service import BrandService
-from .voices_router import router as voices_router
+
+from app.routes.voices_router import router as voices_router
 
 
 def get_brand_service(db: Session = Depends(get_db)) -> BrandService:
@@ -42,7 +40,7 @@ async def get_all_brands(
     brands = brand_service.get_all_brands()
 
     return GetAllBrandsResponse(
-        success=True, brands=brands, message="All brands retrieved successfully"
+        success=True, brands=brands, message=f"All {len(brands)} brands retrieved successfully"
     )
 
 
@@ -56,7 +54,7 @@ async def get_brand_by_id(
     if brand is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Brand with id: {brand_id} not found"
+            detail=f"Brand with id: {brand_id} not found",
         )
 
     return CreateBrandResponse(
@@ -64,6 +62,7 @@ async def get_brand_by_id(
         brand=brand,
         message=f"Brand '{brand.name}' retrieved successfully",
     )
+
 
 # Include voices router behind brand router
 router.include_router(voices_router)

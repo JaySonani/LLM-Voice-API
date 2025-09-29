@@ -1,13 +1,16 @@
 from typing import Optional
-from sqlalchemy.orm import Session
+
 from sqlalchemy import desc
+from sqlalchemy.orm import Session
+
+from app.configs.settings import settings
 from app.llm.ports import LLMPort
 from app.llm.provider import ProviderLLM
 from app.llm.stub import StubLLM
 from app.models.db.brand import BrandDB
 from app.models.db.voice_profile import VoiceEvaluationDB, VoiceProfileDB
-from app.models.voice import CreateVoiceProfileRequest, VoiceEvaluation, VoiceProfile
-from app.configs.settings import settings
+from app.models.voice import (CreateVoiceProfileRequest, VoiceEvaluation,
+                              VoiceProfile)
 from app.tools.scrapper_tool import fetch_page_text
 
 
@@ -131,4 +134,3 @@ class VoiceService:
             return voice_evaluation
         except Exception as e:
             raise ValueError(f"Error evaluating text: {e}")
-

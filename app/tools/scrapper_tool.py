@@ -3,6 +3,7 @@
 import requests
 from bs4 import BeautifulSoup
 
+
 def fetch_page_text(url: str) -> str:
     """
     Fetches the visible text content from a given URL.
@@ -29,4 +30,3 @@ def fetch_page_text(url: str) -> str:
 
     except requests.RequestException as e:
         return f"Error fetching {url}: {e}"
-

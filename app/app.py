@@ -1,11 +1,9 @@
 """FastAPI application factory."""
 
-
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.configs.settings import settings
-
 from app.routes import brands_router
 
 

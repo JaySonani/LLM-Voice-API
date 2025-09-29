@@ -1,17 +1,14 @@
 # routers/voices.py
-from fastapi import APIRouter, Depends, HTTPException, status
 from uuid import UUID, uuid4
 
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session
 
 from app.configs.database import get_db
 from app.models.db.voice_profile import VoiceEvaluationDB
-from app.models.voice import (
-    CreateVoiceProfileRequest,
-    VoiceEvaluationRequest,
-    VoiceEvaluationResponse,
-    VoiceProfileResponse,
-)
+from app.models.voice import (CreateVoiceProfileRequest,
+                              VoiceEvaluationRequest, VoiceEvaluationResponse,
+                              VoiceProfileResponse)
 from app.services.voice_service import VoiceService
 
 router = APIRouter(prefix="/{brand_id}/voices")
