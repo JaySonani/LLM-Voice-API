@@ -1,5 +1,5 @@
 
-# Voice API
+# LLM Voice API
 
 A FastAPI web service that infers and manages a brand's voice characteristics:
 - **Warmth**: How friendly and approachable the brand sounds
@@ -50,8 +50,8 @@ A FastAPI web service that infers and manages a brand's voice characteristics:
    - Create a `.env` file with your settings:
      ```bash
      DATABASE_URL=postgresql://postgres:postgres@localhost:5555/voice_api
-     USE_STUB_LLM=true (false if you want to use real LLM from Cohere)
-     COHERE_API_KEY=your_cohere_api_key_here (required if USE_STUB_LLM is false)
+     USE_STUB_LLM=true  # false if you want to use real LLM from Cohere
+     COHERE_API_KEY=your_cohere_api_key_here  # required if USE_STUB_LLM is false
      ```
 
 5. **Run the development server**:
