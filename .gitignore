@@ -11,3 +11,13 @@ wheels/
 
 # Environment variables
 .env
+
+# Testing
+.coverage
+.pytest_cache/
+htmlcov/
+.tox/
+
+# Linting and type checking
+.mypy_cache/
+.ruff_cache/

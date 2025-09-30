@@ -51,7 +51,7 @@ A FastAPI web service that infers and manages a brand's voice characteristics:
      ```bash
      DATABASE_URL=postgresql://postgres:postgres@localhost:5555/voice_api
      USE_STUB_LLM=true (false if you want to use real LLM from Cohere)
-     COHERE_API_KEY=your_cohere_api_key_here (required if USE_STUB_LLM is true)
+     COHERE_API_KEY=your_cohere_api_key_here (required if USE_STUB_LLM is false)
      ```
 
 5. **Run the development server**:
@@ -154,11 +154,40 @@ voice_api/
 ```
 
 ### Running Tests
-Currently no test suite is implemented. Tests can be added using pytest:
+The project includes comprehensive test coverage with unit and integration tests:
+
 ```bash
-uv add pytest pytest-asyncio
+# Run all tests
 uv run pytest
+
+# Run only unit tests
+uv run pytest tests/unit/ -v
+
+# Run only integration tests
+uv run pytest tests/integration/ -v
+
+# Run with coverage
+uv run pytest --cov=app --cov-report=term-missing
 ```
+
+**Test Suite Overview (43 tests total):**
+
+**Unit Tests (30 tests)** - Focus on core business logic:
+- `test_brand_service.py` - Brand CRUD operations (6 tests)
+- `test_voice_service.py` - Voice profile generation & evaluation (10 tests)
+- `test_stub_llm.py` - StubLLM implementation (7 tests)
+- `test_models.py` - Pydantic model validation (6 tests)
+- `test_scrapper_tool.py` - Web scraping utilities (1 test)
+
+**Integration Tests (13 tests)** - Test API and system integration:
+- `test_api_integration.py` - API endpoints with mocked services (13 tests)
+  - Root endpoint & brand APIs
+  - Voice profile generation APIs
+  - Text evaluation APIs
+  - StubLLM integration validation
+  - Error handling & validation
+
+All tests use **StubLLM** for deterministic, reproducible results without requiring external API calls.
 
 ### Code Formatting
 ```bash
